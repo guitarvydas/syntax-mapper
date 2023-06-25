@@ -1,0 +1,20 @@
+Py2CL {
+  program = item+
+  item =
+    | applySyntactic<Call>
+    | otherchar
+  Call = 
+    | id ArgList
+  ArgList =
+    | "(" ")"
+    | "(" Arg+ ")"
+  Arg = ???
+
+
+  id = idfirst idrest*
+  idfirst = letter | "_"
+  idrest = alnum | "_"
+  otherchar = ~"." any
+  comment = "#" (~"\n" any)+
+  space += comment
+}

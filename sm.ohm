@@ -1,0 +1,15 @@
+Py2CL {
+  program = item+
+  item =
+    | applySyntactic<SlotRef>
+    | otherchar
+  SlotRef =
+    | SlotRef "." id -- recursive
+    | id -- bottom 
+  id = idfirst idrest*
+  idfirst = letter | "_"
+  idrest = alnum | "_"
+  otherchar = ~"." any
+  comment = "#" (~"\n" any)+
+  space += comment
+}

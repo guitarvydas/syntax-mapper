@@ -1,0 +1,20 @@
+Py2CL <: IndentationSensitve {
+  program = item+
+  item =
+    | applySyntactic<Def>
+    | otherchar
+  Def = 
+    | "def" id "(" notParen* ")" ":" indentedStuff
+  indentedStuff = indent indentedInnard* dedent
+  indentedInnard =
+    | indent indentedInnard* dedent
+    | ~indent ~dedent any
+
+  notParen = ~"(" ~")" any
+  id = idfirst idrest*
+  idfirst = letter | "_"
+  idrest = alnum | "_"
+  otherchar = ~"." ~"(" ~")" any
+  comment = "#" (~"\n" any)+
+  space += comment
+}

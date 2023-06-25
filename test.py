@@ -1,28 +1,28 @@
-# queues.py
+# # queues.py
 
-from collections import deque
+# from collections import deque
 
-class FIFO:
-    def __init__(self):
-        self._elements = deque()
+# class FIFO:
+#     def __init__(self):
+#         self._elements = deque()
 
-    def enqueue(self, element):
-        return self._elements.append(element)
+#     def enqueue(self, element):
+#         return self._elements.append(element)
 
-    def dequeue(self):
-        return self._elements.popleft()
+#     def dequeue(self):
+#         return self._elements.popleft()
 
-    def len (self):
-        return len (self._elements)
+#     def len (self):
+#         return len (self._elements)
 
-    def isEmpty (self):
-        return (0 >= len (self._elements))
+#     def isEmpty (self):
+#         return (0 >= len (self._elements))
 
-    def asList (self):
-        return list (self._elements)
+#     def asList (self):
+#         return list (self._elements)
 
-    def __repr__ (self):
-        return list (self._elements)
+#     def __repr__ (self):
+#         return list (self._elements)
 
 class Eh:
     def __init__ (self, given_name):
@@ -37,13 +37,13 @@ class Eh:
 
 class Container (Eh):
       def __init__ (self, name, handler):
-            super().__init__("")
+            #super().__init__("")
             self.name = name
             self.handler = handler
 
 class Leaf (Eh):
       def __init__ (self, handler, instance_data):
-            super().__init__("")
+            #super().__init__("")
             self.name = name
             self.handler = handler
             self.instance_data = instance_data
