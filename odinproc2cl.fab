@@ -1,0 +1,28 @@
+Odin0D {
+  program [item+] = ‛«item»’
+  item [i] = ‛«i»’
+  procDef [id s1 kcc s2 kproc s3 formalList s4 karrow? s5? retList? procBody] =
+    ‛(defun «id» «formalList»«procBody»)’
+  formalsList [lp formals* rp] = ‛«lp»«formals»«rp»’
+  formal [s1 id s2 kcolon s3 type s4] = ‛«id» ’
+  type [typechar+] = ‛«typechar»’
+  typechar_parenthesized [lp typecharinner+ rp] = ‛«lp»«typecharinner»«rp»’
+  typechar_bottom [c] = ‛«c»’
+  typecharinner_parenthesized [lp typecharinner+ rp] = ‛«lp»«typecharinner»«rp»’
+  typecharinner_bottom [c] = ‛«c»’
+  retList_formalsList [x] = ‛«x»’
+  retList_typeList [x] = ‛«x»’
+  retList_singleType [cs* id] = ‛«cs»«id»’
+  typeList [lp typecomma+ rp] = ‛«lp»«typecomma»«rp»’
+  typecomma_withcomma [type s1 comma s2] = ‛«type»«s1»«comma»«s2»’
+  typecomma_last [type s] = ‛«type»«s»’
+  procbody [spaces lb bodychar+ rb] = ‛«spaces»«lb»«bodychar»«rb»’
+  bodychar_recursive [lb bodychar+ rb] = ‛«lb»«bodychar»«rb»’
+  bodychar_bottom [c] = ‛«c»’
+  id [idfirst idrest*] = ‛«idfirst»«idrest»’
+  idfirst [c] = ‛«c»’
+  idrest  [c] = ‛«c»’
+  comment [kslsl c+] = ‛«kslsl»«c»’
+  comma [c] = ‛«c»’
+}
+
