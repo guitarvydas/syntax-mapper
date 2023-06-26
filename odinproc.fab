@@ -4,7 +4,8 @@ Odin0D {
   procDef [id s1 kcc s2 kproc s3 formalList s4 karrow? s5? retList? procBody] =
     ‛def «id»«formalList»\n(-«procBody»-)’
   formalsList [lp formals* rp] = ‛«lp»self «formals»«rp»’
-  formal [s1 id s2 kcolon s3 type s4] = ‛«id» ’
+  formal_other [s1 id s2 kcolon s3 type s4] = ‛«id» ’
+  formal_allocator [kallocator spaces1 kassign spaces2 kcontextdot id spaces3] = ‛’
   type [typechar+] = ‛«typechar»’
   typechar_parenthesized [lp typecharinner+ rp] = ‛«lp»«typecharinner»«rp»’
   typechar_bottom [c] = ‛«c»’

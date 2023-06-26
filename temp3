@@ -75,14 +75,15 @@ def yield(self eh port data )
     msg := make_message(port, data)
     fifo_push(&eh.yield, msg)
     -)
-output_list :: proc(eh: ^Eh, allocator := context.allocator) -> []Message {
-list := make([]Message, eh.output.len)
-iter := make_fifo_iterator(&eh.output)
-for msg, i in fifo_iterate(&iter) {
-list[i] = msg
-}
-return list
-}
+def output_list(self eh )
+(-
+    list := make([]Message, eh.output.len)
+    iter := make_fifo_iterator(&eh.output)
+    for msg, i in fifo_iterate(&iter) {
+    list[i] = msg
+    }
+    return list
+    -)
 def container_handler(self eh message instance_data )
 (-
     log.debug ("container handler routing")
