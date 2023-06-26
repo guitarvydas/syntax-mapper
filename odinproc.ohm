@@ -4,7 +4,7 @@ Odin0D {
     | procDef -- procdef
     | any -- other
 
-  procDef = id spaces "::" spaces "proc" spaces formalsList spaces ("->" retList)? procbody
+  procDef = id spaces "::" spaces "proc" spaces formalsList spaces ("->" spaces retList)? procbody
   formalsList = "(" formal* ")"
   formal = spaces id spaces ":" spaces type spaces
   type = typechar+
@@ -18,16 +18,16 @@ Odin0D {
 
 
   retList =
-    | formalsList
-    | typeList
-    | id
+    | formalsList -- formalsList
+    | typeList -- typeList
+    | (~space ~id any)* id -- singletype
 
   typeList = "(" typecomma+ ")"
   typecomma =
     | type spaces comma spaces -- withcomma
     | type spaces -- last
 
-  procbody = "{" bodychar+ "}"
+  procbody = spaces "{" bodychar+ "}"
   bodychar =
     | "{" bodychar+ "}" -- recursive
     | ~"{" ~"}" any -- bottom
