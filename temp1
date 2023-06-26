@@ -1,11 +1,11 @@
 package zd
-
-
-
-
-
-
-
+import "core:container/queue"
+import "core:fmt"
+import "core:mem"
+import "core:strings"
+import "core:intrinsics"
+import "core:log"
+import dt "../../datum"
  Eh :: struct {
  name: string,
  input: FIFO,
@@ -235,6 +235,5 @@ def child_is_ready(self eh )
  strings.write_rune(&sb, ']')
  fmt.println(strings.to_string(sb))
 }
-
 
 

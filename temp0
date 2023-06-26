@@ -1,11 +1,11 @@
 package zd
-
-
-
-
-
-
-
+import "core:container/queue"
+import "core:fmt"
+import "core:mem"
+import "core:strings"
+import "core:intrinsics"
+import "core:log"
+import dt "../../datum"
  Eh :: struct {
  name: string,
  input: FIFO,
@@ -18,58 +18,49 @@ package zd
  port: string,
  datum: dt.Datum,
 }
- def make_container(self name )
-(-
+ make_container :: proc(name: string) -> ^Eh {
  eh := new(Eh)
  eh.name = name
  eh.handler = container_handler
  return eh
--)
-def leaf_new(self name handler data )
-(-
+}
+leaf_new :: proc(name: string, handler: proc(^Eh, Message, ^any), data: ^any) -> ^Eh {
  eh := new(Eh)
  eh.name = name
  eh.handler = handler
  eh.data = data
  return eh
--)
- def make_message(self port_as_string data )
-(-
+}
+ make_message :: proc(port_as_string: string, data: dt.Datum) -> Message {
  return {
  port = port_clone (port_as_string),
  datum = dt.clone_datum (data) }
--)
-def make_message_from_string(self port s )
-(-
+}
+make_message_from_string :: proc(port: string, s: string) -> Message {
  d := dt.create_datum (raw_data (s), len (s), dt.datum_to_string, "StringMessage")
  cloned_port := port_clone (port) return make_message (cloned_port, d)
--)
- def message_clone(self message )
-(-
+}
+ message_clone :: proc(message: Message) -> Message {
  new_message := Message {
  port = port_clone (message.port), datum = dt.clone_datum (message.datum)
  }
  return new_message
--)
-def port_clone(self port )
-(-
+}
+port_clone :: proc (port : string) -> string {
  return strings.clone (port)
--)
- def discard_message_innards(self msg )
-(-
+}
+ discard_message_innards :: proc(msg: Message) {
  delete_string (msg.port)
  dt.reclaim_datum (msg.datum)
- -)
- def send(self eh port datum )
-(-
+ }
+ send :: proc(eh: ^Eh, port: string, datum: dt.Datum) {
  msg := make_message (port, datum)
  fifo_push(&eh.output, msg)
--)
- def yield(self eh port data )
-(-
+}
+ yield :: proc(eh: ^Eh, port: string, data: $Data) {
  msg := make_message(port, data)
  fifo_push(&eh.yield, msg)
--)
+}
  output_list :: proc(eh: ^Eh, allocator := context.allocator) -> []Message {
  list := make([]Message, eh.output.len)
  iter := make_fifo_iterator(&eh.output)
@@ -78,23 +69,21 @@ def port_clone(self port )
  }
  return list
 }
- def container_handler(self eh message instance_data )
-(-
+ container_handler :: proc(eh: ^Eh, message: Message, instance_data: ^any) {
  log.debug ("container handler routing")
  route(eh, nil, message)
  log.debug ("container handler stepping")
  for any_child_ready(eh) {
  step_children(eh)
  }
--)
+}
  set_state :: #force_inline proc(eh: ^Eh, state: $State)
 where
  intrinsics.type_is_enum(State)
 {
  eh.state = int(state)
 }
- def destroy_container(self eh )
-(-
+ destroy_container :: proc(eh: ^Eh) {
  drain_fifo :: proc(fifo: ^FIFO) {
  for fifo.len > 0 {
  msg, _ := fifo_pop(fifo)
@@ -104,24 +93,21 @@ where
  drain_fifo(&eh.input)
  drain_fifo(&eh.output)
  free(eh)
--)
+}
  FIFO :: queue.Queue(Message)
 fifo_push :: queue.push_back
 fifo_pop :: queue.pop_front_safe
-def fifo_is_empty(self fifo )
-(-
+fifo_is_empty :: proc(fifo: FIFO) -> bool {
  return fifo.len == 0
--)
+}
 FIFO_Iterator :: struct {
  q: ^FIFO,
  idx: int,
 }
-def make_fifo_iterator(self q )
-(-
+make_fifo_iterator :: proc(q: ^FIFO) -> FIFO_Iterator {
  return {q, 0}
--)
-def fifo_iterate(self iter )
-(-
+}
+fifo_iterate :: proc(iter: ^FIFO_Iterator) -> (item: Message, idx: int, ok: bool) {
  if iter.q.len == 0 {
  ok = false
  return
@@ -134,7 +120,7 @@ def fifo_iterate(self iter )
  #no_bounds_check item = iter.q.data[i]
  }
  return
--)
+}
  Connector :: struct {
  direction: Direction,
  sender: Sender,
@@ -157,15 +143,13 @@ Direction :: enum {
  sender_eq :: proc(s1, s2: Sender) -> bool {
  return s1.component == s2.component && s1.port == s2.port
 }
- def deposit(self c message )
-(-
+ deposit :: proc(c: Connector, message: Message) {
  new_message := message_clone(message)
  new_message.port = port_clone (c.receiver.port)
  log.debugf("DEPOSIT", message.port)
  fifo_push(c.receiver.queue, new_message)
--)
-def step_children(self container )
-(-
+}
+step_children :: proc(container: ^Eh) {
  for child in container.children {
  msg: Message
  ok: bool
@@ -188,9 +172,8 @@ def step_children(self container )
  discard_message_innards (msg)
  }
  }
--)
- def route(self container from message )
-(-
+}
+ route :: proc(container: ^Eh, from: ^Eh, message: Message) {
  log.debugf("ROUTE", container.name, from.name, message.port)
  from_sender := Sender{from, message.port}
  no_deposits := true
@@ -205,20 +188,18 @@ def step_children(self container )
  log.error ("###", container.name, from.name, message.port, message.datum.repr (message.datum))
  assert (false)
  }
--)
-def any_child_ready(self container )
-(-
+}
+any_child_ready :: proc(container: ^Eh) -> (ready: bool) {
  for child in container.children {
  if child_is_ready(child) {
  return true
  }
  }
  return false
--)
-def child_is_ready(self eh )
-(-
+}
+child_is_ready :: proc(eh: ^Eh) -> bool {
  return !fifo_is_empty(eh.output) || !fifo_is_empty(eh.input) || !fifo_is_empty(eh.yield)
--)
+}
  print_output_list :: proc(eh: ^Eh) {
  write_rune :: strings.write_rune
  write_string :: strings.write_string
@@ -235,6 +216,4 @@ def child_is_ready(self eh )
  strings.write_rune(&sb, ']')
  fmt.println(strings.to_string(sb))
 }
-
-
 

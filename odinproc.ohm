@@ -2,7 +2,6 @@ Odin0D {
   program = item+
   item =
     | procDef -- procdef
-    | space -- space
     | any -- other
 
   procDef = id spaces "::" spaces "proc" spaces formalsList spaces ("->" spaces retList)? procbody

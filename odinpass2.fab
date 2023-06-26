@@ -1,0 +1,16 @@
+Odin0D {
+  program [item+] = ‛«item»’
+  item [i] = ‛«i»’
+  
+  packageDef [kpackage id] = ‛’
+  importDef_unnamed [kimport spc s] = ‛’
+  importDef_named [kimport spc1 id spc2 s] = ‛’
+
+  id [idfirst idrest*] = ‛«idfirst»«idrest»’
+  idfirst [c] = ‛«c»’
+  idrest  [c] = ‛«c»’
+  dq [c] = ‛"’
+  string [dq1 cs* dq2] = ‛"«cs»"’
+  comment [kslsl cs*] = ‛’
+}
+

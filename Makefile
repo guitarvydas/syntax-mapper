@@ -1,9 +1,11 @@
 all: dev
 
-dev: pass1
+dev: passes
 
-pass1:
-	./fab odinproc.ohm odinproc.fab support.js <test2.odin >temp
+passes:
+	./fab odincomment.ohm odincomment.fab support.js <test2.odin >temp0
+	./fab odinproc.ohm odinproc.fab support.js <temp0 >temp1
+	./fab odinpass2.ohm odinpass2.fab support.js <temp1 >temp2
 
 junk:
 	sed -e 's/, )/)/g' <temp >temp2

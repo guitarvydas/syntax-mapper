@@ -1,0 +1,12 @@
+Odin0Dcomment {
+  program = item+
+  item =
+    | newline+ -- newlines
+    | space+ -- space
+    | any -- other
+
+  newline = "\n"
+  comment = "//" (~"\n" any)*
+  space += comment
+}
+

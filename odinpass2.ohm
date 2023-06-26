@@ -1,41 +1,23 @@
 Odin0Dpass2 {
   program = item+
   item =
-    | procDef -- procdef
+    | packageDef -- package
+    | importDef -- import
     | space -- space
     | any -- other
 
-  procDef = "def" spaces id spaces formalsList spaces procbody
-  formalsList = "(" spaces formal* ")"
-  formal = id spaces
-  type = typechar+
-  typechar =
-    | "(" typecharinner+ ")" -- parenthesized
-    | ~space ~"(" ~")" any -- bottom
+  importDef =
+    | "import" spaces string -- unnamed
+    | "import" spaces id spaces string -- named
 
-  typecharinner =
-    | "(" typecharinner+ ")" -- parenthesized
-    | ~"(" ~")" any  -- bottom
-
-
-  retList =
-    | formalsList -- formalsList
-    | typeList -- typeList
-    | (~space ~id any)* id -- singleType
-
-  typeList = "(" typecomma+ ")"
-  typecomma =
-    | type spaces comma spaces -- withcomma
-    | type spaces -- last
-
-  procbody = spaces "(-" bodychar+ "-)"
-  bodychar =
-    | "(-" bodychar+ "-)" -- recursive
-    | ~"(-" ~"-)" any -- bottom
+  packageDef = "package" id
 
   id = idfirst idrest*
   idfirst = letter | "_"
   idrest = alnum | "_"
-  comma = ","
+  string = dq (~dq any)* dq
+  dq = "\""
+  comment = "//" (~"\n" any)*
+  space += comment
 }
 

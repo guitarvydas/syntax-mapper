@@ -23,7 +23,7 @@ Odin0D {
   id [idfirst idrest*] = ‛«idfirst»«idrest»’
   idfirst [c] = ‛«c»’
   idrest  [c] = ‛«c»’
-  comment [kslsl c+] = ‛’
+  comment [kslsl c+] = ‛ ’
   comma [c] = ‛’
 }
 
