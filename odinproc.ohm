@@ -21,7 +21,7 @@ Odin0D {
   retList =
     | formalsList -- formalsList
     | typeList -- typeList
-    | (~space ~id any)* id -- singletype
+    | (~space ~id any)* id -- singleType
 
   typeList = "(" typecomma+ ")"
   typecomma =

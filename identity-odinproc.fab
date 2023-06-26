@@ -10,27 +10,19 @@ Odin0D {
   typechar_bottom [c] = ‛«c»’
   typecharinner_parenthesized [lp typecharinner+ rp] = ‛«lp»«typecharinner»«rp»’
   typecharinner_bottom [c] = ‛«c»’
-???
-  retList =
-    | formalsList -- formalsList
-    | typeList -- typeList
-    | (~space ~id any)* id -- singletype
-
-  typeList = "(" typecomma+ ")"
-  typecomma =
-    | type spaces comma spaces -- withcomma
-    | type spaces -- last
-
-  procbody = spaces "{" bodychar+ "}"
-  bodychar =
-    | "{" bodychar+ "}" -- recursive
-    | ~"{" ~"}" any -- bottom
-
-  id = idfirst idrest*
-  idfirst = letter | "_"
-  idrest = alnum | "_"
-  comment = "//" (~"\n" any)+
-  space += comment
-  comma = ","
+  retList_formalsList [x] = ‛«x»’
+  retList_typeList [x] = ‛«x»’
+  retList_singleType [cs* id] = ‛«cs»«id»’
+  typeList [lp typecomma+ rp] = ‛«lp»«typecomma»«rp»’
+  typecomma_withcomma [type s1 comma s2] = ‛«type»«s1»«comma»«s2»’
+  typecomma_last [type s] = ‛«type»«s»’
+  procbody [spaces lb bodychar+ rb] = ‛«spaces»«lb»«bodychar»«rb»’
+  bodychar_recursive [lb bodychar+ rb] = ‛«lb»«bodychar»«rb»’
+  bodychar_bottom [c] = ‛«c»’
+  id [idfirst idrest*] = ‛«idfirst»«idrest»’
+  idfirst [c] = ‛«c»’
+  idrest  [c] = ‛«c»’
+  comment [kslsl c+] = ‛«kslsl»«c»’
+  comma [c] = ‛«c»’
 }
 
