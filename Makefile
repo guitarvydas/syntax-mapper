@@ -5,7 +5,8 @@ dev: passes
 passes:
 	./fab odincomment.ohm odincomment.fab support.js <test2.odin >temp0
 	./fab odinproc.ohm odinproc.fab support.js <temp0 >temp1
-	./fab odinpass2.ohm odinpass2.fab support.js <temp1 >temp2
+	./fab odinstruct.ohm odinstruct.fab support.js <temp1 >temp2
+	./intermediateindenter.py <temp2 >temp3
 
 junk:
 	sed -e 's/, )/)/g' <temp >temp2
