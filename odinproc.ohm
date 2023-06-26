@@ -1,0 +1,42 @@
+Odin0D {
+  program = item+
+  item =
+    | procDef -- procdef
+    | any -- other
+
+  procDef = id spaces "::" spaces "proc" spaces formalsList spaces ("->" retList)? procbody
+  formalsList = "(" formal* ")"
+  formal = spaces id spaces ":" spaces type spaces
+  type = typechar+
+  typechar =
+    | "(" typecharinner+ ")" -- parenthesized
+    | ~space ~"(" ~")" any -- bottom
+
+  typecharinner =
+    | "(" typecharinner+ ")" -- parenthesized
+    | ~"(" ~")" any  -- bottom
+
+
+  retList =
+    | formalsList
+    | typeList
+    | id
+
+  typeList = "(" typecomma+ ")"
+  typecomma =
+    | type spaces comma spaces -- withcomma
+    | type spaces -- last
+
+  procbody = "{" bodychar+ "}"
+  bodychar =
+    | "{" bodychar+ "}" -- recursive
+    | ~"{" ~"}" any -- bottom
+
+  id = idfirst idrest*
+  idfirst = letter | "_"
+  idrest = alnum | "_"
+  comment = "//" (~"\n" any)+
+  space += comment
+  comma = ","
+}
+
