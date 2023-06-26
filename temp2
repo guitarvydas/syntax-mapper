@@ -52,16 +52,16 @@ Message :: struct {
 
 // Creates a component that acts as a container. It is the same as a `Eh` instance
 // whose handler function is `container_handler`.
-def make_container(self name )
+def make_container(self, name):
 (-
     eh := new(Eh)
     eh.name = name
     eh.handler = container_handler
-    
+    // eh.data, in this case, is "children" and "connections"
     return eh
 -)
 
-def leaf_new(self name handler data )
+def leaf_new(self, name, handler, data):
 (-
     eh := new(Eh)
     eh.name = name
@@ -72,53 +72,53 @@ def leaf_new(self name handler data )
 
 // Utility for making a `Message`. Used to safely "seed" messages
 // entering the very top of a network.
-def make_message(self port_as_string data )
+def make_message(self, port_as_string, data):
 (-
     return {
-        
-	
-	
+        // This is written to be ultra-conservative.
+	// Can this be optimized away?
+	// Is it necessary to clone the port and the datum or can we simply just use them?
 
-        
-	
+        // Constant strings start out life being scoped by the caller in Odin.  Unlike in C, where
+	// constant strings a allocated in a pool with an infinite lifetime.
 	
         port  = port_clone (port_as_string),
         datum = dt.clone_datum (data) 
     }
 -)
-def make_message_from_string(self port s )
+def make_message_from_string(self, port, s):
 (-
     d := dt.create_datum (raw_data (s), len (s), dt.datum_to_string, "StringMessage")
-    cloned_port := port_clone (port) 
+    cloned_port := port_clone (port) // Ultra-conservative strategy.  See comment in make_message.
     return make_message (cloned_port, d)
 -)
 
 // Clones a message. Primarily used internally for "fanning out" a message to multiple destinations.
-def message_clone(self message )
+def message_clone(self, message):
 (-
     new_message := Message {
-        port = port_clone (message.port), 
+        port = port_clone (message.port), // Ultra-conservative Strategy.  See comment in make_message.
         datum = dt.clone_datum (message.datum)
     }
     return new_message
 -)
 
-def port_clone(self port )
+def port_clone(self, port):
 (-
     return strings.clone (port)
 -)
 
 // Frees a message.
-def discard_message_innards(self msg )
+def discard_message_innards(self, msg):
 (-
     delete_string (msg.port)
     dt.reclaim_datum (msg.datum)
-    
+    // caller frees the msg struct (typically scoped and automagically freed) 
 -)
 
 // Sends a message on the given `port` with `data`, placing it on the output
 // of the given component.
-def send(self eh port datum )
+def send(self, eh, port, datum):
 (-
     msg := make_message (port, datum)
     fifo_push(&eh.output, msg)
@@ -131,7 +131,7 @@ def send(self eh port datum )
 // NOTE(z64): this functionality is an active area of research; we are
 // exploring how to best expose an API that allows for concurrent IO etc.
 // while staying in-line with the principles of the system.
-def yield(self eh port data )
+def yield(self, eh, port, data):
 (-
     msg := make_message(port, data)
     fifo_push(&eh.yield, msg)
@@ -151,9 +151,9 @@ output_list :: proc(eh: ^Eh, allocator := context.allocator) -> []Message {
 }
 
 // The default handler for container components.
-def container_handler(self eh message instance_data )
+def container_handler(self, eh, message, instance_data):
 (-
-    
+    // instance_data ignored ...
     log.debug ("container handler routing")
     route(eh, nil, message)
     log.debug ("container handler stepping")
@@ -172,7 +172,7 @@ where
 }
 
 // Frees the given container and associated data.
-def destroy_container(self eh )
+def destroy_container(self, eh):
 (-
     drain_fifo :: proc(fifo: ^FIFO) {
         for fifo.len > 0 {
@@ -190,7 +190,7 @@ FIFO       :: queue.Queue(Message)
 fifo_push  :: queue.push_back
 fifo_pop   :: queue.pop_front_safe
 
-def fifo_is_empty(self fifo )
+def fifo_is_empty(self, fifo):
 (-
     return fifo.len == 0
 -)
@@ -200,12 +200,12 @@ FIFO_Iterator :: struct {
     idx: int,
 }
 
-def make_fifo_iterator(self q )
+def make_fifo_iterator(self, q):
 (-
     return {q, 0}
 -)
 
-def fifo_iterate(self iter )
+def fifo_iterate(self, iter):
 (-
     if iter.q.len == 0 {
         ok = false
@@ -258,7 +258,7 @@ sender_eq :: proc(s1, s2: Sender) -> bool {
 }
 
 // Delivers the given message to the receiver of this connector.
-def deposit(self c message )
+def deposit(self, c, message):
 (-
     new_message := message_clone(message)
     new_message.port = port_clone (c.receiver.port)
@@ -266,7 +266,7 @@ def deposit(self c message )
     fifo_push(c.receiver.queue, new_message)
 -)
 
-def step_children(self container )
+def step_children(self, container):
 (-
     for child in container.children {
         msg: Message
@@ -297,7 +297,7 @@ def step_children(self container )
 
 // Routes a single message to all matching destinations, according to
 // the container's connection network.
-def route(self container from message )
+def route(self, container, from, message):
 (-
             log.debugf("ROUTE", container.name, from.name, message.port)
     from_sender := Sender{from, message.port}
@@ -316,7 +316,7 @@ def route(self container from message )
     }
 -)
 
-def any_child_ready(self container )
+def any_child_ready(self, container):
 (-
     for child in container.children {
         if child_is_ready(child) {
@@ -326,7 +326,7 @@ def any_child_ready(self container )
     return false
 -)
 
-def child_is_ready(self eh )
+def child_is_ready(self, eh):
 (-
     return !fifo_is_empty(eh.output) || !fifo_is_empty(eh.input) || !fifo_is_empty(eh.yield)
 -)

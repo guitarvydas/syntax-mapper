@@ -1,13 +1,13 @@
 all: dev
 
-dev: lisp python
+dev: pass1
 
-lisp:
-	./fab odinproc.ohm odinproc2cl.fab support.js <test2.odin >test2.lisp
+pass1:
+	./fab odinproc.ohm odinproc.fab support.js <test2.odin >temp
 
-python:
-	./fab odinproc.ohm odinproc2py.fab support.js <test2.odin >temp
-	sed -e 's/, )/)/g' <temp >test2.py
+junk:
+	sed -e 's/, )/)/g' <temp >temp2
+	./indenter.py <temp2 >test2.py
 
 identity:
 	./fab odinproc.ohm identity-odinproc.fab support.js <test2.odin >test2.out
