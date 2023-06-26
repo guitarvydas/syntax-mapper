@@ -1,0 +1,36 @@
+Odin0D {
+  program [item+] = ‛«item»’
+  item [i] = ‛«i»’
+  procDef [id s1 kcc s2 kproc s3 formalList s4 karrow? s5? retList? procBody] =
+    ‛«id»«s1»«kcc»«s2»«kproc»«s3»«formalList»«s4»«karrow»«s5»«retList»«procBody»’
+  formalsList [lp formals* rp] = ‛«lp»«formals»«rp»’
+  formal [s1 id s2 kcolon s3 type s4] = ‛«s1»«id»«s2»«kcolon»«s3»«type»«s4»’
+  type [typechar+] = ‛«typechar»’
+  typechar_parenthesized [lp typecharinner+ rp] = ‛«lp»«typecharinner»«rp»’
+  typechar_bottom [c] = ‛«c»’
+  typecharinner_parenthesized [lp typecharinner+ rp] = ‛«lp»«typecharinner»«rp»’
+  typecharinner_bottom [c] = ‛«c»’
+???
+  retList =
+    | formalsList -- formalsList
+    | typeList -- typeList
+    | (~space ~id any)* id -- singletype
+
+  typeList = "(" typecomma+ ")"
+  typecomma =
+    | type spaces comma spaces -- withcomma
+    | type spaces -- last
+
+  procbody = spaces "{" bodychar+ "}"
+  bodychar =
+    | "{" bodychar+ "}" -- recursive
+    | ~"{" ~"}" any -- bottom
+
+  id = idfirst idrest*
+  idfirst = letter | "_"
+  idrest = alnum | "_"
+  comment = "//" (~"\n" any)+
+  space += comment
+  comma = ","
+}
+
