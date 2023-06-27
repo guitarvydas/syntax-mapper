@@ -164,9 +164,10 @@ defstruct Receiver
     queue
     port
 -)
- sender_eq :: proc(s1, s2: Sender) -> bool {
+ def sender_eq(self s1 s2 )
+(-
  return s1.component == s2.component && s1.port == s2.port
-}
+-)
  def deposit(self c message )
 (-
  new_message := message_clone(message)

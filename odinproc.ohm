@@ -8,6 +8,7 @@ Odin0D {
   formalsList = "(" formal* ")"
   formal =
     | "allocator" spaces ":=" spaces "context." id spaces -- allocator
+    | spaces id comma -- shorthand
     | spaces id spaces ":" spaces type spaces -- other
   type = typechar+
   typechar =
