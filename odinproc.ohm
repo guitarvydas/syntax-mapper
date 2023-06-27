@@ -4,7 +4,8 @@ Odin0D {
     | procDef -- procdef
     | any -- other
 
-  procDef = id spaces "::" spaces "proc" spaces formalsList spaces ("->" spaces retList)? procbody
+  procDef = id spaces "::" spaces "#force_inline"? spaces "proc" spaces formalsList spaces ("->" spaces retList)? whereclause? procbody
+  whereclause = "where" spaces wherebody
   formalsList = "(" formal* ")"
   formal =
     | "allocator" spaces ":=" spaces "context." id spaces -- allocator
@@ -34,6 +35,11 @@ Odin0D {
   bodychar =
     | string -- string
     | "{" bodychar+ "}" -- recursive
+    | comment -- comment
+    | ~"{" ~"}" any -- bottom
+  wherebody = wbodychar+
+  wbodychar =
+    | string -- string
     | comment -- comment
     | ~"{" ~"}" any -- bottom
 

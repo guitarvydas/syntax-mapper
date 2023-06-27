@@ -88,12 +88,10 @@ def port_clone(self port )
  step_children(eh)
  }
 -)
- set_state :: #force_inline proc(eh: ^Eh, state: $State)
-where
- intrinsics.type_is_enum(State)
-{
+ def set_state(self eh state )
+(-
  eh.state = int(state)
-}
+-)
  def destroy_container(self eh )
 (-
  drain_fifo :: proc(fifo: ^FIFO) {

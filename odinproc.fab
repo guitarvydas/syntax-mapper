@@ -1,8 +1,12 @@
 Odin0D {
   program [item+] = ‛«item»’
   item [i] = ‛«i»’
-  procDef [id s1 kcc s2 kproc s3 formalList s4 karrow? s5? retList? procBody] =
+
+  procDef [id s1 kcc s2 kinline? s3 kproc s4 formalList s5 karrow? s6? retList? shereclause? procBody] =
     ‛def «id»«formalList»\n(-«procBody»-)’
+
+  whereclause [kwhere sp wherebody] = ‛’
+
   formalsList [lp formals* rp] = ‛«lp»self «formals»«rp»’
   formal_shorthand [s1 id kcomma] = ‛«id» ’
   formal_other [s1 id s2 kcolon s3 type s4] = ‛«id» ’
@@ -18,11 +22,17 @@ Odin0D {
   typeList [lp typecomma+ rp] = ‛«lp»«typecomma»«rp»’
   typecomma_withcomma [type s1 comma s2] = ‛«type»«s1»«comma»«s2»’
   typecomma_last [type s] = ‛«type»«s»’
+
   procbody [spaces lb bodychar+ rb] = ‛«bodychar»’
   bodychar_recursive [lb bodychar+ rb] = ‛«lb»«bodychar»«rb»’
   bodychar_comment [c] = ‛’
   bodychar_bottom [c] = ‛«c»’
   bodychar_string [s] = ‛«s»’
+  wherebody [wbodychar+] = ‛«wbodychar»’
+  wbodychar_comment [c] = ‛’
+  wbodychar_bottom [c] = ‛«c»’
+  wbodychar_string [s] = ‛«s»’
+
   id [idfirst idrest*] = ‛«idfirst»«idrest»’
   idfirst [c] = ‛«c»’
   idrest  [c] = ‛«c»’
