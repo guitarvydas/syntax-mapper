@@ -21,10 +21,13 @@ Odin0D {
   bodychar_recursive [lb bodychar+ rb] = ‛«lb»«bodychar»«rb»’
   bodychar_comment [c] = ‛’
   bodychar_bottom [c] = ‛«c»’
+  bodychar_string [s] = ‛«s»’
   id [idfirst idrest*] = ‛«idfirst»«idrest»’
   idfirst [c] = ‛«c»’
   idrest  [c] = ‛«c»’
   comment [kslsl c+] = ‛ ’
   comma [c] = ‛’
+  string [dq1 cs* dq2] = ‛"«cs»"’
+  dq [c] = ‛"’
 }
 

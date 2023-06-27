@@ -31,6 +31,7 @@ Odin0D {
 
   procbody = spaces "{" bodychar+ "}"
   bodychar =
+    | string -- string
     | "{" bodychar+ "}" -- recursive
     | comment -- comment
     | ~"{" ~"}" any -- bottom
@@ -41,5 +42,7 @@ Odin0D {
   comment = "//" (~"\n" any)+
   space += comment
   comma = ","
+  string = dq (~dq any)* dq
+  dq = "\""
 }
 

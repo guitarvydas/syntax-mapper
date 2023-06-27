@@ -220,7 +220,8 @@ def child_is_ready(self eh )
 (-
  return !fifo_is_empty(eh.output) || !fifo_is_empty(eh.input) || !fifo_is_empty(eh.yield)
 -)
- print_output_list :: proc(eh: ^Eh) {
+ def print_output_list(self eh )
+(-
  write_rune :: strings.write_rune
  write_string :: strings.write_string
  sb: strings.Builder
@@ -235,6 +236,6 @@ def child_is_ready(self eh )
  }
  strings.write_rune(&sb, ']')
  fmt.println(strings.to_string(sb))
-}
+-)
 
 

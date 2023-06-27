@@ -1,4 +1,4 @@
-Py2CL <: IndentationSensitve {
+Py2CL <: IndentationSensitive {
   program = item+
   item =
     | applySyntactic<Def>

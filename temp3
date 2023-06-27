@@ -229,22 +229,23 @@ def child_is_ready(self eh )
 (-
     return !fifo_is_empty(eh.output) || !fifo_is_empty(eh.input) || !fifo_is_empty(eh.yield)
     -)
-print_output_list :: proc(eh: ^Eh) {
-write_rune :: strings.write_rune
-write_string :: strings.write_string
-sb: strings.Builder
-defer strings.builder_destroy(&sb)
-write_rune(&sb, '[')
-iter := make_fifo_iterator(&eh.output)
-for msg, idx in fifo_iterate(&iter) {
-if idx > 0 {
-write_string(&sb, ", ")
-}
-fmt.sbprintf(&sb, "{{%s, %v}", msg.port, msg.datum.repr (msg.datum))
-}
-strings.write_rune(&sb, ']')
-fmt.println(strings.to_string(sb))
-}
+def print_output_list(self eh )
+(-
+    write_rune :: strings.write_rune
+    write_string :: strings.write_string
+    sb: strings.Builder
+    defer strings.builder_destroy(&sb)
+    write_rune(&sb, '[')
+    iter := make_fifo_iterator(&eh.output)
+    for msg, idx in fifo_iterate(&iter) {
+    if idx > 0 {
+    write_string(&sb, ", ")
+    }
+    fmt.sbprintf(&sb, "{{%s, %v}", msg.port, msg.datum.repr (msg.datum))
+    }
+    strings.write_rune(&sb, ']')
+    fmt.println(strings.to_string(sb))
+    -)
 
 
 
