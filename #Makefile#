@@ -13,6 +13,6 @@ junk:
 	./indenter.py <temp2 >test2.py
 
 identity:
-	./fab odinproc.ohm identity-odinproc.fab support.js <test2.odin >test2.out
+	./fab odinproc.ohm identity-odinproc.fab support.js <test4.odin >test4.out
 	diff -B test2.odin test2.out
 

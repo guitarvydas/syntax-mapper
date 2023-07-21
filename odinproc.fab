@@ -9,19 +9,15 @@ Odin0D {
 
   formalsList [lp formals* rp] = ‛«lp»self «formals»«rp»’
   formal_shorthand [s1 id kcomma] = ‛«id» ’
-  formal_other [s1 id s2 kcolon s3 type s4] = ‛«id» ’
+  formal_other [s1 id s2 kcolon s3 type] = ‛«id» ’
   formal_allocator [kallocator spaces1 kassign spaces2 kcontextdot id spaces3] = ‛’
-  type [typechar+] = ‛«typechar»’
+  type [spaces1 typechar+ spaces2] = ‛«typechar»’
   typechar_parenthesized [lp typecharinner+ rp] = ‛«lp»«typecharinner»«rp»’
   typechar_bottom [c] = ‛«c»’
   typecharinner_parenthesized [lp typecharinner+ rp] = ‛«lp»«typecharinner»«rp»’
   typecharinner_bottom [c] = ‛«c»’
-  retList_formalsList [x] = ‛«x»’
-  retList_typeList [x] = ‛«x»’
-  retList_singleType [cs* id] = ‛«cs»«id»’
-  typeList [lp typecomma+ rp] = ‛«lp»«typecomma»«rp»’
-  typecomma_withcomma [type s1 comma s2] = ‛«type»«s1»«comma»«s2»’
-  typecomma_last [type s] = ‛«type»«s»’
+  retList_multiple [lp type* rp] = ‛«type»’
+  retList_single [type] = ‛«type»’
 
   procbody [spaces lb bodychar+ rb] = ‛«bodychar»’
   bodychar_recursive [lb bodychar+ rb] = ‛«lb»«bodychar»«rb»’

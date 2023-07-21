@@ -13,7 +13,9 @@ Odin0Dstruct {
 
   packageDef = "package" spaces id
 
-  struct = spaces id spaces "::" spaces "struct" spaces "{" spaces typedfield+ "}"
+  struct = spaces id spaces "::" spaces "struct" spaces parameterizedtype? spaces "{" spaces typedfield+ "}"
+
+  parameterizedtype = "(" "$" id spaces ":" spaces typechar+ ")"
 
   typedfield = spaces id spaces ":" spaces type spaces
   type =
@@ -35,5 +37,7 @@ Odin0Dstruct {
   string = dq (~dq any)* dq
   dq = "\""
   comment = "//" (~"\n" any)*
-  space += comment
+  space = uspc | unl | comment
+  uspc = "・"
+  unl = "⦚"
 }
